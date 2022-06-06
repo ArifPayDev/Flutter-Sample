@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shop_app/components/default_button.dart';
+import 'package:shop_app/models/Cart.dart';
+import 'package:shop_app/service/payment.dart';
 
 import '../../../constants.dart';
 import '../../../size_config.dart';
@@ -68,7 +70,8 @@ class CheckoutCard extends StatelessWidget {
                     text: "Total:\n",
                     children: [
                       TextSpan(
-                        text: "\$337.15",
+                        text:
+                            "\$${demoCarts.map((e) => e.product.price).toList().reduce((value, element) => value + element)}",
                         style: TextStyle(fontSize: 16, color: Colors.black),
                       ),
                     ],
@@ -78,7 +81,10 @@ class CheckoutCard extends StatelessWidget {
                   width: getProportionateScreenWidth(190),
                   child: DefaultButton(
                     text: "Check Out",
-                    press: () {},
+                    press: () {
+                      PaymentService paymentService = new PaymentService();
+                      paymentService.pay();
+                    },
                   ),
                 ),
               ],

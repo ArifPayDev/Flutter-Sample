@@ -6,8 +6,13 @@ import 'Product.dart';
 class Cart {
   final Product product;
   final int numOfItem;
+  final String url;
 
-  Cart({required this.product, required this.numOfItem});
+  Cart(
+      {required this.product,
+      required this.numOfItem,
+      this.url =
+          "https://collider.com/wp-content/uploads/playstation-4-controller-2.jpg"});
 }
 
 // Demo data for our cart
