@@ -1,4 +1,4 @@
-package com.arifpay.shop_app
+package net.arifpay.sample
 
 import io.flutter.embedding.android.FlutterActivity
 
