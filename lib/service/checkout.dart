@@ -16,8 +16,8 @@ class CheckoutService {
     try {
       ArifpayCheckoutRequest request = new ArifpayCheckoutRequest(
           items: arifpayCheckoutItems,
-          cancelLink: this.option.cancleURL,
-          errorLink: option.errorURL,
+          cancelUrl: this.option.cancleURL,
+          errorUrl: option.errorURL,
           successUrl: option.successURL);
       Response<Map<String, dynamic>> response =
           await _dio.post<Map<String, dynamic>>("/checkout/session",
@@ -71,27 +71,30 @@ class ArifpayCheckoutReponse {
 }
 
 class ArifpayCheckoutRequest {
-  final String cancelLink;
-  final String errorLink;
+  final String cancelUrl;
+  final String errorUrl;
   final String successUrl;
   List<ArifpayCheckoutItem> items;
 
   ArifpayCheckoutRequest(
-      {required this.cancelLink,
-      required this.errorLink,
+      {required this.cancelUrl,
+      required this.errorUrl,
       required this.successUrl,
       required this.items});
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      'errorUrl': errorUrl,
+      'successUrl': successUrl,
+      'cancelUrl': cancelUrl,
       'items': items.map((x) => x.toMap()).toList(),
     };
   }
 
   factory ArifpayCheckoutRequest.fromMap(Map<String, dynamic> map) {
     return ArifpayCheckoutRequest(
-      cancelLink: map['cancelLink'] as String,
-      errorLink: map['errorLink'] as String,
+      cancelUrl: map['cancelUrl'] as String,
+      errorUrl: map['errorUrl'] as String,
       successUrl: map['successUrl'] as String,
       items: List<ArifpayCheckoutItem>.from(
         (map['items'] as List<int>).map<ArifpayCheckoutItem>(
@@ -109,7 +112,7 @@ class ArifpayCheckoutRequest {
 
   @override
   String toString() {
-    return 'ArifpayCheckoutRequest(cancelLink: $cancelLink, errorLink: $errorLink, successUrl: $successUrl, items: $items)';
+    return 'ArifpayCheckoutRequest(cancelUrl: $cancelUrl, errorUrl: $errorUrl, successUrl: $successUrl, items: $items)';
   }
 }
 

@@ -5,7 +5,7 @@ import 'package:shop_app/service/checkout.dart';
 
 class PaymentService {
   Arifpay arifpay = Arifpay.instance;
-  void pay() async {
+  Future<void> pay() async {
     bool isInstalled = await DeviceApps.isAppInstalled('net.arifpay.client');
 
     if (isInstalled) {
@@ -24,6 +24,8 @@ class PaymentService {
             quantity: e.numOfItem))
         .toList();
 
-    var session = arifpay.checkout.create(items);
+    var session = await arifpay.checkout.create(items);
+
+    print(session.sessionId);
   }
 }

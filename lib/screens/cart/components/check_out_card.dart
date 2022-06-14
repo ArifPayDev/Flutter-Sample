@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shop_app/components/default_button.dart';
 import 'package:shop_app/models/Cart.dart';
+import 'package:shop_app/service/exception/arifpayexception.dart';
 import 'package:shop_app/service/payment.dart';
 
 import '../../../constants.dart';
@@ -81,9 +82,13 @@ class CheckoutCard extends StatelessWidget {
                   width: getProportionateScreenWidth(190),
                   child: DefaultButton(
                     text: "Check Out",
-                    press: () {
-                      PaymentService paymentService = new PaymentService();
-                      paymentService.pay();
+                    press: () async {
+                      try {
+                        PaymentService paymentService = new PaymentService();
+                        await paymentService.pay();
+                      } on ArifpayException catch (e) {
+                        print(e.msg);
+                      }
                     },
                   ),
                 ),
