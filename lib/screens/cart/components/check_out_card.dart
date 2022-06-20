@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shop_app/components/default_button.dart';
 import 'package:shop_app/models/Cart.dart';
+import 'package:shop_app/screens/checkout_fail/checkout_error_screen.dart';
+import 'package:shop_app/screens/checkout_success/checkout_success_screen.dart';
 import 'package:shop_app/service/exception/arifpayexception.dart';
 import 'package:shop_app/service/payment.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../../constants.dart';
 import '../../../size_config.dart';
@@ -84,10 +87,59 @@ class CheckoutCard extends StatelessWidget {
                     text: "Check Out",
                     press: () async {
                       try {
+                        showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            builder: (context) {
+                              return Center(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle),
+                                  width: 50,
+                                  height: 50,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                ),
+                              );
+                            });
                         PaymentService paymentService = new PaymentService();
-                        await paymentService.pay();
-                      } on ArifpayException catch (e) {
-                        print(e.msg);
+                        var session = await paymentService.pay();
+                        Navigator.of(context).pop();
+                        showDialog(
+                            context: context,
+                            builder: (context) => WebView(
+                                initialUrl: session.paymentUrl,
+                                navigationDelegate:
+                                    (NavigationRequest request) {
+                                  final uri = Uri.parse(request.url);
+                                  print(uri);
+                                  if (request.url.contains("success")) {
+                                    Navigator.of(context).pop();
+                                    Navigator.of(context).pushNamed(
+                                        CheckoutSuccessScreen.routeName);
+                                  }
+                                  if (request.url.contains("error")) {
+                                    Navigator.of(context).pop();
+                                    Navigator.of(context).pushNamed(
+                                        CheckoutFailScreen.routeName);
+                                  }
+                                  if (request.url.contains("cancle")) {
+                                    Navigator.of(context).pop();
+                                  }
+
+                                  return NavigationDecision.navigate;
+                                },
+                                javascriptMode: JavascriptMode.unrestricted));
+                      } catch (e) {
+                        Navigator.of(context).pop();
+                        showDialog(
+                            context: context,
+                            builder: (context) => Dialog(
+                                child: Container(child: Text("Error: $e"))));
+                        rethrow;
                       }
                     },
                   ),

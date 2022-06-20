@@ -6,7 +6,7 @@ class Arifpay {
   late CheckoutService checkout;
   static const String APIVERSION = "v0";
   // ignore: non_constant_identifier_names
-  String BASE_URL = "https://sample.arifpay.net/$APIVERSION";
+  String BASE_URL = "http://sample.arifpay.net";
 
   late Dio _dio;
   static Arifpay? _instance;

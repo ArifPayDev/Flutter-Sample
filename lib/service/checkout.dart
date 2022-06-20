@@ -19,15 +19,16 @@ class CheckoutService {
           cancelUrl: this.option.cancleURL,
           errorUrl: option.errorURL,
           successUrl: option.successURL);
-      Response<Map<String, dynamic>> response =
-          await _dio.post<Map<String, dynamic>>("/checkout/session",
-              data: request.toMap());
-      return ArifpayCheckoutReponse.fromMap(response.data!);
+      Response response = await _dio.post("/api/create-checkout-session",
+          data: request.toMap());
+      print(response.data);
+      return ArifpayCheckoutReponse.fromMap(response.data!["data"]);
     } on DioError catch (e) {
+      print(e);
       if (e.response == null ||
           e.response?.data == null ||
-          e.response?.statusCode == null)
-        throw ArifpayException("UnknownError: ${e.message}", 0);
+          e.response?.statusCode == null) rethrow;
+
       throw ArifpayException(e.response?.data["msg"], e.response!.statusCode!);
     }
   }
@@ -117,24 +118,28 @@ class ArifpayCheckoutRequest {
 }
 
 class ArifpayCheckoutItem {
+  final String name;
   final double price;
   final int quantity;
   final String? description;
   final String? image;
 
   ArifpayCheckoutItem(
-      {required this.price,
+      {required this.name,
+      required this.price,
       required this.quantity,
       required this.description,
       required this.image});
 
   ArifpayCheckoutItem copyWith({
+    String? name,
     double? price,
     int? quantity,
     String? description,
     String? image,
   }) {
     return ArifpayCheckoutItem(
+      name: name ?? this.name,
       price: price ?? this.price,
       quantity: quantity ?? this.quantity,
       description: description ?? this.description,
@@ -144,6 +149,7 @@ class ArifpayCheckoutItem {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      'name': name,
       'price': price,
       'quantity': quantity,
       'description': description,
@@ -153,6 +159,7 @@ class ArifpayCheckoutItem {
 
   factory ArifpayCheckoutItem.fromMap(Map<String, dynamic> map) {
     return ArifpayCheckoutItem(
+      name: map['name'] as String,
       price: map['price'] as double,
       quantity: map['quantity'] as int,
       description:
