@@ -4,7 +4,6 @@ import 'package:shop_app/components/default_button.dart';
 import 'package:shop_app/models/Cart.dart';
 import 'package:shop_app/screens/checkout_fail/checkout_error_screen.dart';
 import 'package:shop_app/screens/checkout_success/checkout_success_screen.dart';
-import 'package:shop_app/service/exception/arifpayexception.dart';
 import 'package:shop_app/service/payment.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
